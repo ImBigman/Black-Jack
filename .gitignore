@@ -1,0 +1,11 @@
+/.idea
+colors
+codestyles
+_linux
+.vscode
+*.xml
+*.yml
+.idea
+*.txt
+test.rb
+*.icls
