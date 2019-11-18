@@ -127,7 +127,7 @@ class Game
     @player = player
     cards = player.on_hand.map { |elem| elem[2..-1].to_sym }
     cards.each { |card| summary << decks.cards_parity[card] }
-    summary[-1] = 1 if summary.last == 11 && summary.count(11) == 2 && summary[0..-2].sum < 10
+    summary[-1] = 1 if summary.last == 11 && summary.count(11) == 2 && summary[0..-2].sum <= 10
     player.on_hand_score = summary.sum
   end
 
