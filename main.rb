@@ -43,12 +43,13 @@ class Game
   end
 
   def dealers_step
-    second_step
     if @players[1].on_hand.count < 3 && count_cards(@players[1]) <= 17
       deal_cards(@players[1], 1)
       puts 'Диллер взял карту, на руках 3 карты [*] [*] [*]'
+      second_step
     else
       puts 'Диллер пропустил ход'
+      second_step
     end
     post_game
   end
