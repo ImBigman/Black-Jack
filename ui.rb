@@ -1,6 +1,7 @@
 # Run user's text interface
 
 require './game.rb'
+require './card_deck.rb'
 
 class UserInterface
   def initialize
@@ -16,7 +17,7 @@ class UserInterface
 
   def first
     @game.first_step
-    puts "Вам раздали карты, на руках #{@game.players[0].hand.cards} "
+    puts "Вам раздали карты, на руках #{@game.players[0].hand.cards.map(&:name)}"
     puts "У вас #{@game.players[0].hand.cards_count}"
     puts 'У дилера на руках 2 карты [*] [*]'
     second
@@ -53,7 +54,7 @@ class UserInterface
       second
     else
       @game.one_card
-      puts "Вы взяли карту, на руках #{@game.players[0].hand.cards}"
+      puts "Вы взяли карту, на руках #{@game.players[0].hand.cards.map(&:name)}"
       puts "У вас #{@game.players[0].hand.cards_count} очков"
       @game.dealers_step
       fourth
@@ -62,9 +63,9 @@ class UserInterface
 
   def fifth
     @game.end_game
-    puts "У #{@game.players[0].name} на руках #{@game.players[0].hand.cards}"
+    puts "У #{@game.players[0].name} на руках #{@game.players[0].hand.cards.map(&:name)}"
     puts "Очков #{@game.players[0].hand.score}"
-    puts "У Дилера на руках #{@game.players[1].hand.cards}"
+    puts "У Дилера на руках #{@game.players[1].hand.cards.map(&:name)}"
     puts "Очков #{@game.players[1].hand.score}"
     @game.valid ? valid_message : congratulations_message
   end
