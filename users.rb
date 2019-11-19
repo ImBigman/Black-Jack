@@ -1,13 +1,13 @@
 # Create player with start money
 
 class Player
-  attr_reader :name, :start_money
-  attr_accessor :money, :on_hand_score, :on_hand
+  attr_reader :name
+  attr_accessor :money, :hand
 
   def initialize(name)
     @name = name
     @money = 100
-    @on_hand ||= []
+    @hand = 0
   end
 end
 
