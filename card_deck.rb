@@ -3,43 +3,39 @@
 class Cards
   attr_reader :card_deck, :cards_parity, :name
 
-  # rubocop: disable Metrics/AbcSize
   def initialize
     @card_deck = []
-    card_generator = [(2..10).to_a, %w[J Q K A]].flatten!
-    card_generator.each do |cards|
-      @card_deck << Card.new('♥ ' + cards.to_s, 0)
-      @card_deck << Card.new('♦ ' + cards.to_s, 0)
-      @card_deck << Card.new('♣ ' + cards.to_s, 0)
-      @card_deck << Card.new('♠ ' + cards.to_s, 0)
-      price_to_cards
-    end
+    new_cards
   end
 
-  def cards_price
-    @cards_parity = {}
-    card_deck_price = [(2..10).to_a, %w[J Q K A]].flatten!
-    card_deck_price.each.with_index(1) { |cards, index| @cards_parity[:"#{cards}".to_sym] = index }
-    @cards_parity.each do |key, _|
-      @cards_parity[key] = 10 if %i[J Q K].include?(key)
-      @cards_parity[key] = 11 if %i[A].include?(key)
+  def new_cards
+    card_generator = [(2..10).to_a, Card::PICTURES].flatten!
+    card_generator.each do |card|
+      Card::SUITS.each do |suit|
+        @card_deck << Card.new(suit, card)
+      end
     end
-  end
-
-  def price_to_cards
-    cards_price
-    @card_deck.each { |card| card.score = @cards_parity[card.name[2..-1].to_sym] }
   end
 end
 
-# rubocop: enable Metrics/AbcSize
-
 class Card
-  attr_reader :name
+  attr_reader :name, :suit
   attr_accessor :score
 
-  def initialize(name, score)
+  SUITS = %w[♠ ♥ ♣ ♦].freeze
+  PICTURES = %i[J Q K A].freeze
+  SCORES = { J: 10, Q: 10, K: 10, A: 11 }.freeze
+
+  def initialize(suit, name)
+    @suit = suit
     @name = name
-    @score = score
+  end
+
+  def price
+    @score = (2..10).include?(@name) ? @name : SCORES[@name]
+  end
+
+  def face
+    @suit.to_s + ' ' + @name.to_s
   end
 end

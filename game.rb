@@ -3,46 +3,48 @@ require './card_deck.rb'
 require './hand.rb'
 
 class Game
-  attr_reader :players, :bank, :card_deck, :decks, :winner
+  attr_reader :user, :bank, :card_deck, :decks, :winner, :computer
 
   def initialize
-    @players = []
+    @user = user
+    @computer = computer
     @bank = 0
     @winner = 0
   end
 
   def create_players(player_name)
-    @players.push(Player.new(player_name), Dealer.new)
-    @players[0].hand = Hand.new
-    @players[1].hand = Hand.new
+    @user = Player.new(player_name)
+    @user.hand = Hand.new
+    @computer = Dealer.new
+    @computer.hand = Hand.new
   end
 
   def first_step
     @decks = Cards.new
-    deal_cards(@players[0], 2)
-    deal_cards(@players[1], 2)
+    deal_cards(@user, 2)
+    deal_cards(@computer, 2)
     take_bit
   end
 
   def valid_cards
-    @players[0].hand.cards.count && @players[1].hand.cards.count == 3
+    @user.hand.cards.count && @computer.hand.cards.count == 3
   end
 
   def take_bit
-    @players[0].money -= 10
-    @players[1].money -= 10
+    @user.money -= 10
+    @computer.money -= 10
     first_bit = 20
     @bank += first_bit
   end
 
   def one_card
-    deal_cards(@players[0], 1)
+    deal_cards(@user, 1)
   end
 
   def dealers_step
-    @players[1].hand.cards_count
-    if @players[1].hand.cards.count < 3 && @players[1].hand.score <= 17
-      deal_cards(@players[1], 1)
+    @computer.hand.cards_count
+    if @computer.hand.cards.count < 3 && @computer.hand.score <= 17
+      deal_cards(@computer, 1)
     else
       valid_cards
     end
@@ -59,52 +61,51 @@ class Game
   # rubocop: disable Metrics/PerceivedComplexity
 
   def valid
-    if @players[0].hand.score > 21 && @players[1].hand.score < 22
-      @winner = @players[1]
-    elsif  @players[1].hand.score > 21 && @players[0].hand.score < 22
-      @winner = @players[0]
-    elsif  @players[0].hand.score > 21 && @players[1].hand.score > 21
-      @winner = 1
+    if @user.hand.score > 21 && @computer.hand.score < 22
+      @winner = @computer
+    elsif  @computer.hand.score > 21 && @user.hand.score < 22
+      @winner = @user
+    elsif  @user.hand.score > 21 && @computer.hand.score > 21
+      @winner = 'losers'
     end
   end
 
   # rubocop: enable Metrics/PerceivedComplexity
   # rubocop: enable Metrics/CyclomaticComplexity
   def congratulations
-    if @players[0].hand.score <= 21 && @players[0].hand.score > @players[1].hand.score
-      @winner = @players[0]
-    elsif @players[1].hand.score <= 21 && @players[1].hand.score > @players[0].hand.score
-      @winner = @players[1]
-    elsif @players[0].hand.score == @players[1].hand.score
-      @winner = 2
+    if @user.hand.score <= 21 && @user.hand.score > @computer.hand.score
+      @winner = @user
+    elsif @computer.hand.score <= 21 && @computer.hand.score > @user.hand.score
+      @winner = @computer
+    elsif @user.hand.score == @computer.hand.score
+      @winner = 'draw'
     end
   end
 
   # rubocop: enable Metrics/AbcSize
 
   def calculation
-    if @winner == @players[0]
-    @players[0].money += @bank
-    elsif @winner == @players[1]
-    @players[1].money += @bank
+    if @winner == @user
+    @user.money += @bank
+    elsif @winner == @computer
+    @computer.money += @bank
     elsif @winner == 2
-    @players[0].money += (@bank / 2)
-    @players[1].money += (@bank / 2)
+    @user.money += (@bank / 2)
+    @computer.money += (@bank / 2)
     end
   end
 
   def end_game
-    @players[0].hand.cards_count
-    @players[1].hand.cards_count
+    @user.hand.cards_count
+    @computer.hand.cards_count
     valid
     congratulations
     calculation
   end
 
   def post_game
-    @players.each do |player|
-      player.hand = Hand.new
-    end
+    @user.hand = Hand.new
+    @computer.hand = Hand.new
     @bank = 0
   end
 end

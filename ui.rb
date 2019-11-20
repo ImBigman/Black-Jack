@@ -17,8 +17,8 @@ class UserInterface
 
   def first
     @game.first_step
-    puts "Вам раздали карты, на руках #{@game.players[0].hand.cards.map(&:name)}"
-    puts "У вас #{@game.players[0].hand.cards_count}"
+    puts "Вам раздали карты, на руках #{@game.user.hand.cards.map(&:face)}"
+    puts "У вас #{@game.user.hand.cards_count}"
     puts 'У дилера на руках 2 карты [*] [*]'
     second
   end
@@ -37,7 +37,7 @@ class UserInterface
 
   def fourth
     @game.dealers_step
-    if @game.players[1].hand.cards.count == 3
+    if @game.computer.hand.cards.count == 3
       puts 'Дилер взял карту, на руках 3 карты [*] [*] [*]'
       @game.valid_cards ? fifth : second
     else
@@ -49,13 +49,13 @@ class UserInterface
   # rubocop: disable Metrics/AbcSize
 
   def third
-    if @game.players[0].hand.cards.count == 3
+    if @game.user.hand.cards.count == 3
       puts 'У вас максимальное количество карт!'
       second
     else
       @game.one_card
-      puts "Вы взяли карту, на руках #{@game.players[0].hand.cards.map(&:name)}"
-      puts "У вас #{@game.players[0].hand.cards_count} очков"
+      puts "Вы взяли карту, на руках #{@game.user.hand.cards.map(&:face)}"
+      puts "У вас #{@game.user.hand.cards_count} очков"
       @game.dealers_step
       fourth
     end
@@ -63,32 +63,32 @@ class UserInterface
 
   def fifth
     @game.end_game
-    puts "У #{@game.players[0].name} на руках #{@game.players[0].hand.cards.map(&:name)}"
-    puts "Очков #{@game.players[0].hand.score}"
-    puts "У Дилера на руках #{@game.players[1].hand.cards.map(&:name)}"
-    puts "Очков #{@game.players[1].hand.score}"
+    puts "У #{@game.user.name} на руках #{@game.user.hand.cards.map(&:face)}"
+    puts "Очков #{@game.user.hand.score}"
+    puts "У Дилера на руках #{@game.computer.hand.cards.map(&:face)}"
+    puts "Очков #{@game.computer.hand.score}"
     @game.valid ? valid_message : congratulations_message
   end
 
   def congratulations_message
-    if @game.winner == @game.players[1]
-      puts "Победил Дилер, у него #{@game.players[1].money}$"
-    elsif @game.winner == @game.players[0]
-      puts "Вы победили, у вас #{@game.players[0].money}$"
-    elsif @game.winner == 2
+    if @game.winner == @game.computer
+      puts "Победил Дилер, у него #{@game.computer.money}$"
+    elsif @game.winner == @game.user
+      puts "Вы победили, у вас #{@game.user.money}$"
+    elsif @game.winner == 'draw'
     puts 'Ничья, все остались при своих деньгах.'
-    puts "У #{@game.players[0].name} #{@game.players[0].money}$"
-    puts "У #{@game.players[1].name} #{@game.players[1].money}$"
+    puts "У #{@game.user.name} #{@game.user.money}$"
+    puts "У #{@game.computer.name} #{@game.computer.money}$"
     end
     again
   end
 
   def valid_message
-    if @game.winner == @game.players[1]
-    puts "Победил Дилер, теперь у него #{@game.players[1].money}$"
-    elsif @game.winner == @game.players[0]
-    puts "Вы победили, теперь у вас #{@game.players[0].money}$"
-    elsif @game.winner == 1
+    if @game.winner == @game.computer
+    puts "Победил Дилер, теперь у него #{@game.computer.money}$"
+    elsif @game.winner == @game.user
+    puts "Вы победили, теперь у вас #{@game.user.money}$"
+    elsif @game.winner == 'losers'
     puts 'Вы оба проиграли!'
     end
     again
