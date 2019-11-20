@@ -18,7 +18,7 @@ class Cards
 
   def cards_price
     @cards_parity = {}
-    card_deck_price = [(1..10).to_a, %w[J Q K A]].flatten!
+    card_deck_price = [(2..10).to_a, %w[J Q K A]].flatten!
     card_deck_price.each.with_index(1) { |cards, index| @cards_parity[:"#{cards}".to_sym] = index }
     @cards_parity.each do |key, _|
       @cards_parity[key] = 10 if %i[J Q K].include?(key)
