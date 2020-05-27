@@ -1,1 +1,1 @@
-* Black Jack on Ruby
+* BlackJack on Ruby
